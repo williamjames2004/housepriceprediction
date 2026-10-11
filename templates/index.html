@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeNest | House Price Prediction</title>
+    <meta name="description" content="Estimate house prices using machine learning. Explore property features and get an instant house price prediction.">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #247a55;
+            --primary-dark: #185b3d;
+            --primary-light: #e8f5ed;
+            --accent: #d9a441;
+            --background: #f8faf7;
+            --surface: #ffffff;
+            --text: #23352b;
+            --muted: #718078;
+            --border: #e2e9e3;
+            --shadow: 0 12px 35px rgba(32, 69, 46, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+        }
+
+        h1, h2, h3, h4, .brand {
+            font-family: "Manrope", sans-serif;
+            font-weight: 800;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+        }
+
+        .brand {
+            color: var(--primary-dark);
+            font-size: 1.45rem;
+            letter-spacing: -1px;
+        }
+
+        .brand i {
+            color: var(--primary);
+        }
+
+        .nav-link {
+            color: #526259;
+            font-size: 0.92rem;
+            font-weight: 600;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .btn-primary-custom {
+            background: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+        .btn-primary-custom:hover {
+            background: var(--primary-dark);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 80px 0 65px;
+            background:
+                radial-gradient(circle at 90% 10%, #e2f2e6 0, transparent 32%),
+                linear-gradient(135deg, #f8faf7 0%, #edf5eb 100%);
+            overflow: hidden;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border: 1px solid #d5e9d9;
+            border-radius: 50px;
+            background: #fff;
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .hero h1 {
+            margin-top: 22px;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            line-height: 1.12;
+            letter-spacing: -2.5px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero-description {
+            max-width: 550px;
+            margin: 22px 0 28px;
+            color: var(--muted);
+            font-size: 1.08rem;
+            line-height: 1.8;
+        }
+
+        .hero-image {
+            position: relative;
+            min-height: 360px;
+            overflow: hidden;
+            border-radius: 28px;
+            background: #dcebdd;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 360px;
+            object-fit: cover;
+        }
+
+        .image-label {
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            left: 18px;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        .image-label-icon {
+            display: grid;
+            width: 46px;
+            height: 46px;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .image-label p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        .image-label strong {
+            display: block;
+            margin-bottom: 3px;
+            color: var(--text);
+        }
+
+        .section {
+            padding: 75px 0;
+            scroll-margin-top: 80px;
+        }
+
+        .section-heading {
+            margin-bottom: 12px;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            letter-spacing: -1.2px;
+        }
+
+        .section-description {
+            max-width: 690px;
+            margin: 0 auto;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .stat-card {
+            height: 100%;
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            transition: 0.25s;
+        }
+
+        .stat-card:hover,
+        .info-card:hover,
+        .algorithm-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            display: grid;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 17px;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 1.35rem;
+        }
+
+        .stat-card h3 {
+            margin-bottom: 7px;
+            font-size: 1.12rem;
+        }
+
+        .stat-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .predict-section {
+            background: #edf4ed;
+        }
+
+        .form-card,
+        .result-card,
+        .info-card,
+        .algorithm-card {
+            height: 100%;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--surface);
+            box-shadow: 0 6px 25px rgba(32, 69, 46, 0.035);
+        }
+
+        .form-card {
+            padding: 30px;
+        }
+
+        .form-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 1.45rem;
+        }
+
+        .form-subtitle {
+            margin-bottom: 28px;
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+
+        .form-group-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 25px 0 17px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--primary-dark);
+            font-size: 0.98rem;
+            font-weight: 800;
+        }
+
+        .form-label {
+            margin-bottom: 8px;
+            color: #405348;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 48px;
+            border: 1px solid #dce5dd;
+            border-radius: 10px;
+            background-color: #fbfdfb;
+            color: var(--text);
+            font-size: 0.93rem;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(36, 122, 85, 0.12);
+        }
+
+        .form-text {
+            color: var(--muted);
+            font-size: 0.78rem;
+        }
+
+        .predict-button {
+            width: 100%;
+            min-height: 52px;
+            margin-top: 28px;
+            border-radius: 11px;
+            font-weight: 800;
+        }
+
+        .result-card {
+            position: sticky;
+            top: 100px;
+            height: auto;
+            padding: 28px;
+        }
+
+        .result-banner {
+            display: grid;
+            min-height: 180px;
+            margin-bottom: 25px;
+            padding: 24px;
+            place-items: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #e4f4e7, #f5f9ed);
+            text-align: center;
+        }
+
+        .result-banner i {
+            color: var(--primary);
+            font-size: 2.4rem;
+        }
+
+        .result-banner p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .result-price {
+            margin-top: 8px;
+            color: var(--primary-dark);
+            font-family: "Manrope", sans-serif;
+            font-size: clamp(1.7rem, 3vw, 2.5rem);
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .result-note {
+            padding: 15px;
+            border-radius: 12px;
+            background: #f7f9f6;
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 1.7;
+        }
+
+        .feature-list {
+            padding: 0;
+            list-style: none;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            margin: 18px 0;
+            color: #526259;
+            font-size: 0.92rem;
+            line-height: 1.65;
+        }
+
+        .feature-list i {
+            margin-top: 2px;
+            color: var(--primary);
+        }
+
+        .alert-custom {
+            padding: 15px;
+            border: 1px solid #f0d1c8;
+            border-radius: 12px;
+            background: #fff5f1;
+            color: #a33e2c;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .dataset-table {
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: white;
+        }
+
+        .dataset-table .table {
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .dataset-table thead th {
+            padding: 16px;
+            background: #eaf4eb;
+            color: var(--primary-dark);
+            font-size: 0.86rem;
+            white-space: nowrap;
+        }
+
+        .dataset-table tbody td {
+            padding: 14px 16px;
+            color: #526259;
+            font-size: 0.88rem;
+        }
+
+        .column-tag {
+            display: inline-block;
+            margin: 4px;
+            padding: 8px 12px;
+            border: 1px solid #dce9dc;
+            border-radius: 8px;
+            background: white;
+            color: #405348;
+            font-size: 0.83rem;
+        }
+
+        .column-tag.target {
+            border-color: #a7d5b5;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .algorithm-card {
+            padding: 28px;
+            transition: 0.25s;
+        }
+
+        .algorithm-number {
+            display: grid;
+            width: 45px;
+            height: 45px;
+            margin-bottom: 20px;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .algorithm-card h3 {
+            margin-bottom: 13px;
+            font-size: 1.12rem;
+        }
+
+        .algorithm-card p,
+        .algorithm-card li {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .algorithm-card ul {
+            padding-left: 19px;
+        }
+
+        .faq-item {
+            margin-bottom: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: white;
+        }
+
+        .accordion-button {
+            padding: 19px 21px;
+            color: var(--text);
+            font-weight: 700;
+            box-shadow: none !important;
+        }
+
+        .accordion-button:not(.collapsed) {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .accordion-body {
+            color: var(--muted);
+            font-size: 0.92rem;
+            line-height: 1.8;
+        }
+
+        .footer {
+            padding: 42px 0 22px;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+
+        .footer-description {
+            max-width: 450px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .footer-link {
+            display: block;
+            margin-bottom: 11px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.82rem;
+            text-align: center;
+        }
+
+        @media (max-width: 991px) {
+            .hero {
+                padding: 55px 0;
+            }
+
+            .hero-image {
+                margin-top: 25px;
+            }
+
+            .result-card {
+                position: static;
+                margin-top: 25px;
+            }
+
+            .section {
+                padding: 55px 0;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .form-card {
+                padding: 20px;
+            }
+
+            .hero h1 {
+                letter-spacing: -1.5px;
+            }
+
+            .hero-image,
+            .hero-image img {
+                min-height: 280px;
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand brand" href="#home">
+                <i class="bi bi-house-heart-fill me-2"></i>HomeNest<span>.</span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-2"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <div class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                    <a class="nav-link" href="#about">About</a>
+                    <a class="nav-link" href="#dataset">Dataset</a>
+                    <a class="nav-link" href="#algorithm">Algorithm</a>
+                    <a class="nav-link" href="#predict">Predict Price</a>
+                    <a class="nav-link" href="#faqs">FAQs</a>
+                    <a class="btn btn-primary-custom ms-lg-2 mt-2 mt-lg-0" href="#predict">
+                        Try Predictor <i class="bi bi-arrow-up-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <span class="eyebrow">
+                            <i class="bi bi-stars"></i>
+                            MACHINE LEARNING · REAL ESTATE
+                        </span>
+
+                        <h1>Find the value of your <span>future home.</span></h1>
+
+                        <p class="hero-description">
+                            Discover an estimated property price using machine learning.
+                            Enter your home's size, facilities, and furnishing details
+                            to generate a prediction from our trained model.
+                        </p>
+
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="#predict" class="btn btn-primary-custom">
+                                <i class="bi bi-calculator me-2"></i>Estimate House Price
+                            </a>
+                            <a href="#algorithm" class="btn btn-outline-success rounded-3 px-4 py-3 fw-bold">
+                                Explore the Model
+                            </a>
+                        </div>
+
+                        <div class="row g-3 mt-4">
+                            <div class="col-6">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <span class="small fw-semibold">Instant prediction</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                                    <span class="small fw-semibold">ML-powered estimation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="hero-image">
+                            <img
+                                src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=85"
+                                alt="Beautiful modern house surrounded by greenery"
+                            >
+
+                            <div class="image-label">
+                                <div class="image-label-icon">
+                                    <i class="bi bi-house-check"></i>
+                                </div>
+                                <div>
+                                    <strong>A smarter way to estimate</strong>
+                                    <p>Property features in. Price estimate out.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="about">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="eyebrow">ABOUT THE PROJECT</span>
+                    <h2 class="section-heading mt-3">Real estate meets machine learning.</h2>
+                    <p class="section-description">
+                        HomeNest is a house price prediction application built with
+                        Python, Flask, Pandas, and Scikit-learn. It learns patterns
+                        from property data and uses them to estimate prices for new inputs.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bi bi-house-door"></i></div>
+                            <h3>Property Details</h3>
+                            <p>Consider area, bedrooms, bathrooms, stories, parking, and other home features.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bi bi-diagram-3"></i></div>
+                            <h3>Random Forest</h3>
+                            <p>Combine predictions from multiple decision trees to estimate the house price.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="bi bi-currency-exchange"></i></div>
+                            <h3>Price Estimate</h3>
+                            <p>Receive a predicted price using the same units and currency as the training dataset.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section predict-section" id="predict">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="eyebrow">PROPERTY ESTIMATOR</span>
+                    <h2 class="section-heading mt-3">Let's estimate your house price.</h2>
+                    <p class="section-description">
+                        Fill in all the property details below. The form uses the
+                        12 input features required by your trained model.
+                    </p>
+                </div>
+
+                <div class="row g-4 align-items-start">
+                    <div class="col-lg-8">
+                        <div class="form-card">
+                            <h3 class="form-title">
+                                <i class="bi bi-clipboard2-check text-success"></i>
+                                Property Information
+                            </h3>
+                            <p class="form-subtitle">
+                                Enter the details as accurately as possible for a more useful estimate.
+                            </p>
+
+                            {% if error %}
+                            <div class="alert-custom mb-4" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                {{ error }}
+                            </div>
+                            {% endif %}
+
+                            <form method="POST" action="{{ url_for('index') }}" id="predictionForm">
+                                <h4 class="form-group-title">
+                                    <i class="bi bi-rulers"></i> Size & Layout
+                                </h4>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="area">Area (sq. ft.)</label>
+                                        <input class="form-control" type="number" id="area" name="area" min="1" step="any" value="{{ values.get('area', '7420') }}" placeholder="e.g. 7420" required>
+                                        <div class="form-text">Total property area as represented in your dataset.</div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="bedrooms">Bedrooms</label>
+                                        <input class="form-control" type="number" id="bedrooms" name="bedrooms" min="1" max="20" step="1" value="{{ values.get('bedrooms', '4') }}" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="bathrooms">Bathrooms</label>
+                                        <input class="form-control" type="number" id="bathrooms" name="bathrooms" min="1" max="20" step="1" value="{{ values.get('bathrooms', '2') }}" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="stories">Stories</label>
+                                        <input class="form-control" type="number" id="stories" name="stories" min="1" max="20" step="1" value="{{ values.get('stories', '3') }}" required>
+                                    </div>
+                                </div>
+
+                                <h4 class="form-group-title">
+                                    <i class="bi bi-building"></i> Property Facilities
+                                </h4>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="mainroad">Main Road Access</label>
+                                        <select class="form-select" id="mainroad" name="mainroad" required>
+                                            <option value="yes" {% if values.get('mainroad') == 'yes' %}selected{% endif %}>Yes</option>
+                                            <option value="no" {% if values.get('mainroad') == 'no' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="guestroom">Guest Room</label>
+                                        <select class="form-select" id="guestroom" name="guestroom" required>
+                                            <option value="yes" {% if values.get('guestroom') == 'yes' %}selected{% endif %}>Yes</option>
+                                            <option value="no" {% if values.get('guestroom') == 'no' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="basement">Basement</label>
+                                        <select class="form-select" id="basement" name="basement" required>
+                                            <option value="yes" {% if values.get('basement') == 'yes' %}selected{% endif %}>Yes</option>
+                                            <option value="no" {% if values.get('basement') == 'no' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="hotwaterheating">Hot Water Heating</label>
+                                        <select class="form-select" id="hotwaterheating" name="hotwaterheating" required>
+                                            <option value="yes" {% if values.get('hotwaterheating') == 'yes' %}selected{% endif %}>Yes</option>
+                                            <option value="no" {% if values.get('hotwaterheating') == 'no' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="airconditioning">Air Conditioning</label>
+                                        <select class="form-select" id="airconditioning" name="airconditioning" required>
+                                            <option value="yes" {% if values.get('airconditioning') == 'yes' %}selected{% endif %}>Yes</option>
+                                            <option value="no" {% if values.get('airconditioning') == 'no' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="parking">Parking Spaces</label>
+                                        <input class="form-control" type="number" id="parking" name="parking" min="0" max="20" step="1" value="{{ values.get('parking', '2') }}" required>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="prefarea">Preferred Area</label>
+                                        <select class="form-select" id="prefarea" name="prefarea" required>
+                                            <option value="yes" {% if values.get('prefarea') == 'yes' %}selected{% endif %}>Yes</option>
+                                            <option value="no" {% if values.get('prefarea') == 'no' %}selected{% endif %}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="furnishingstatus">Furnishing Status</label>
+                                        <select class="form-select" id="furnishingstatus" name="furnishingstatus" required>
+                                            <option value="furnished" {% if values.get('furnishingstatus') == 'furnished' %}selected{% endif %}>Furnished</option>
+                                            <option value="semi-furnished" {% if values.get('furnishingstatus') == 'semi-furnished' %}selected{% endif %}>Semi-furnished</option>
+                                            <option value="unfurnished" {% if values.get('furnishingstatus') == 'unfurnished' %}selected{% endif %}>Unfurnished</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary-custom predict-button">
+                                    <i class="bi bi-calculator me-2"></i>Predict House Price
+                                    <i class="bi bi-arrow-right ms-2"></i>
+                                </button>
+
+                                <button type="reset" class="btn btn-outline-secondary w-100 mt-2 rounded-3 py-2" id="clearButton">
+                                    <i class="bi bi-arrow-counterclockwise me-2"></i>Reset Form
+                                </button>
+
+                                <p class="form-text mt-3 mb-0">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    This is a machine learning estimate, not a professional property valuation.
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="result-card">
+                            <div class="result-banner">
+                                {% if prediction is not none %}
+                                    <i class="bi bi-house-check-fill"></i>
+                                    <p>Your estimated house price</p>
+                                    <div class="result-price">{{ "{:,.2f}".format(prediction) }}</div>
+                                    <p>Price units follow your dataset.</p>
+                                {% else %}
+                                    <i class="bi bi-house-heart"></i>
+                                    <h4 class="mt-3 mb-0">Your home, valued smarter.</h4>
+                                    <p>Your predicted price will appear here.</p>
+                                {% endif %}
+                            </div>
+
+                            <h4 class="fs-5 mb-3">How it works</h4>
+
+                            <ul class="feature-list">
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span>Enter the 12 property features requested by the model.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-diagram-3-fill"></i>
+                                    <span>The saved Random Forest pipeline processes your inputs.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-currency-exchange"></i>
+                                    <span>The application displays the model's estimated price.</span>
+                                </li>
+                            </ul>
+
+                            <div class="result-note">
+                                <i class="bi bi-lightbulb me-1"></i>
+                                <strong>Remember:</strong> The estimate depends on your training data.
+                                Actual prices also depend on location, market conditions, property age,
+                                and other factors not included in this model.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="dataset">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="eyebrow">DATASET OVERVIEW</span>
+                    <h2 class="section-heading mt-3">Understand the data behind the prediction.</h2>
+                    <p class="section-description">
+                        The model uses 12 input columns and predicts the target column
+                        <strong>price</strong>. The sample below illustrates the structure
+                        of your dataset.
+                    </p>
+                </div>
+
+                <div class="dataset-table table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Data Type</th>
+                                <th>Purpose</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>price</td>
+                                <td>Numeric</td>
+                                <td>Prediction target</td>
+                                <td>13300000</td>
+                            </tr>
+                            <tr>
+                                <td>area</td>
+                                <td>Numeric</td>
+                                <td>Property area</td>
+                                <td>7420</td>
+                            </tr>
+                            <tr>
+                                <td>bedrooms, bathrooms</td>
+                                <td>Integer</td>
+                                <td>Room counts</td>
+                                <td>4, 2</td>
+                            </tr>
+                            <tr>
+                                <td>stories, parking</td>
+                                <td>Integer</td>
+                                <td>Building levels and parking spaces</td>
+                                <td>3, 2</td>
+                            </tr>
+                            <tr>
+                                <td>mainroad, guestroom, basement</td>
+                                <td>Categorical</td>
+                                <td>Access and property facilities</td>
+                                <td>yes / no</td>
+                            </tr>
+                            <tr>
+                                <td>hotwaterheating, airconditioning</td>
+                                <td>Categorical</td>
+                                <td>Heating and cooling facilities</td>
+                                <td>no / yes</td>
+                            </tr>
+                            <tr>
+                                <td>prefarea</td>
+                                <td>Categorical</td>
+                                <td>Preferred-area indicator</td>
+                                <td>yes / no</td>
+                            </tr>
+                            <tr>
+                                <td>furnishingstatus</td>
+                                <td>Categorical</td>
+                                <td>Furnishing category</td>
+                                <td>furnished</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <h3 class="fs-5 mb-3">All dataset column names</h3>
+                    <div class="p-3 border rounded-4 bg-white">
+                        <span class="column-tag target">price — target</span>
+                        <span class="column-tag">area</span>
+                        <span class="column-tag">bedrooms</span>
+                        <span class="column-tag">bathrooms</span>
+                        <span class="column-tag">stories</span>
+                        <span class="column-tag">mainroad</span>
+                        <span class="column-tag">guestroom</span>
+                        <span class="column-tag">basement</span>
+                        <span class="column-tag">hotwaterheating</span>
+                        <span class="column-tag">airconditioning</span>
+                        <span class="column-tag">parking</span>
+                        <span class="column-tag">prefarea</span>
+                        <span class="column-tag">furnishingstatus</span>
+                    </div>
+                    <p class="form-text mt-3">
+                        The displayed examples are based on the sample you provided.
+                        The full CSV may contain additional rows.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="algorithm">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="eyebrow">THE MACHINE LEARNING MODEL</span>
+                    <h2 class="section-heading mt-3">How Random Forest predicts prices.</h2>
+                    <p class="section-description">
+                        Your model uses a preprocessing pipeline followed by a
+                        Random Forest Regressor containing 200 decision trees.
+                    </p>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="algorithm-card">
+                            <div class="algorithm-number">01</div>
+                            <h3>Input Features</h3>
+                            <p>
+                                The application collects 12 features describing the house.
+                                Numerical values represent measurements and counts;
+                                categorical values describe facilities and furnishing.
+                            </p>
+                            <ul>
+                                <li>5 numerical features</li>
+                                <li>7 categorical features</li>
+                                <li>1 target: price</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="algorithm-card">
+                            <div class="algorithm-number">02</div>
+                            <h3>One-Hot Encoding</h3>
+                            <p>
+                                Categorical variables cannot be used directly by the
+                                tree model as text. OneHotEncoder converts categories
+                                into numeric indicator features.
+                            </p>
+                            <ul>
+                                <li>Handles multiple categories</li>
+                                <li>Ignores unknown categories safely</li>
+                                <li>Uses the categories learned during training</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="algorithm-card">
+                            <div class="algorithm-number">03</div>
+                            <h3>Random Forest Regressor</h3>
+                            <p>
+                                Random Forest trains many decision trees using
+                                randomized samples and feature selection. Their
+                                predictions are averaged to produce a regression estimate.
+                            </p>
+                            <ul>
+                                <li>200 estimators (trees)</li>
+                                <li>Random state set to 42</li>
+                                <li>Captures non-linear feature relationships</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6">
+                        <div class="algorithm-card">
+                            <div class="algorithm-number">04</div>
+                            <h3>Training and Evaluation</h3>
+                            <p>
+                                Your training script splits the data into training and
+                                testing subsets when at least five rows are present.
+                                It reports Mean Absolute Error (MAE), and R² when the
+                                test target contains more than one unique value.
+                            </p>
+                            <ul>
+                                <li>Test size: 20%</li>
+                                <li>Random state: 42</li>
+                                <li>Final pipeline is retrained on all available rows</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6">
+                        <div class="algorithm-card">
+                            <div class="algorithm-number">05</div>
+                            <h3>Prediction Pipeline</h3>
+                            <p>
+                                The trained pipeline is saved to
+                                <code>house_price_model.pkl</code>. Flask loads this file,
+                                prepares the submitted features in the expected order,
+                                and returns the predicted price.
+                            </p>
+                            <ul>
+                                <li>Model persistence with Joblib</li>
+                                <li>Consistent preprocessing at prediction time</li>
+                                <li>Web interface powered by Flask</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 rounded-4 border bg-white">
+                    <h3 class="fs-5 mb-3">
+                        <i class="bi bi-graph-up-arrow text-success me-2"></i>
+                        Understanding the evaluation metrics
+                    </h3>
+                    <p class="text-secondary mb-2">
+                        <strong>MAE (Mean Absolute Error):</strong>
+                        The average absolute difference between actual and predicted prices.
+                        It uses the same price units as the target column.
+                    </p>
+                    <p class="text-secondary mb-0">
+                        <strong>R² Score:</strong>
+                        Indicates how well predictions explain variation in the target
+                        on the test set. It can be negative when the model performs
+                        worse than predicting the test-set mean.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" id="faqs">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="eyebrow">NEED TO KNOW</span>
+                    <h2 class="section-heading mt-3">Frequently asked questions.</h2>
+                    <p class="section-description">
+                        A few helpful answers about the prediction system and its limitations.
+                    </p>
+                </div>
+
+                <div class="row justify-content-center">
+                    <div class="col-lg-9">
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item faq-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true">
+                                        What is house price prediction?
+                                    </button>
+                                </h3>
+                                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        It is a regression task that estimates a property's
+                                        price using information such as area, room counts,
+                                        facilities, parking, and furnishing status.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item faq-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Why was Random Forest selected?
+                                    </button>
+                                </h3>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Random Forest combines multiple decision trees and
+                                        can learn non-linear patterns. Its suitability should
+                                        still be assessed using validation results and comparison
+                                        with alternative regression models.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item faq-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        Is the predicted price guaranteed to be accurate?
+                                    </button>
+                                </h3>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        No. It is an estimate based on the patterns in your
+                                        training dataset. It is not a guaranteed selling price
+                                        or a substitute for a professional valuation.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item faq-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                        What does the price currency represent?
+                                    </button>
+                                </h3>
+                                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        The application displays the numeric price in the same
+                                        units as your CSV's <code>price</code> column.
+                                        Confirm the dataset's currency before interpreting
+                                        the result as rupees or another currency.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item faq-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                        What should I do if the prediction does not work?
+                                    </button>
+                                </h3>
+                                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Ensure that <code>house_price_model.pkl</code> exists
+                                        in the project root. Run <code>python model.py</code>
+                                        to train and save it. Also check that the model and
+                                        application use the same feature names and compatible
+                                        library versions.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item faq-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                        Does the model consider location and market trends?
+                                    </button>
+                                </h3>
+                                <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Not directly. Your current feature list does not include
+                                        a specific location, property age, or current market data.
+                                        Adding reliable features like these may improve real-world
+                                        usefulness if the dataset supports them.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <a class="brand" href="#home">
+                        <i class="bi bi-house-heart-fill me-2"></i>HomeNest.
+                    </a>
+                    <p class="footer-description">
+                        A machine learning project that explores property features
+                        and estimates house prices using a Random Forest regression pipeline.
+                        Built with Python, Flask, Pandas, and Scikit-learn.
+                    </p>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h3 class="fs-6 mb-3">Explore</h3>
+                    <a class="footer-link" href="#about">About Project</a>
+                    <a class="footer-link" href="#dataset">Dataset</a>
+                    <a class="footer-link" href="#algorithm">Algorithm</a>
+                    <a class="footer-link" href="#predict">Predict Price</a>
+                </div>
+
+                <div class="col-6 col-lg-3">
+                    <h3 class="fs-6 mb-3">Resources</h3>
+                    <a class="footer-link" href="#faqs">FAQs</a>
+                    <a class="footer-link" href="#predict">Try the Predictor</a>
+                    <a class="footer-link" href="#home">Back to Top ↑</a>
+                </div>
+            </div>
+
+            <div class="copyright">
+                © <span id="currentYear"></span> HomeNest. All rights reserved.
+                Built for educational and demonstration purposes.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+        document.getElementById("clearButton").addEventListener("click", function () {
+            window.location.href = "{{ url_for('index') }}";
+        });
+    </script>
+</body>
+</html>
